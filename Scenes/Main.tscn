@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Shaders/Materials/rayMarchingVolume.material" type="Material" id=1]
+[ext_resource path="res://Scenes/Anims/MarchingVolumeExemple.anim" type="Animation" id=2]
 
 [sub_resource type="PlaneMesh" id=1]
 size = Vector2( 20, 20 )
@@ -21,7 +22,7 @@ transform = Transform( 1, 0, 0, 0, 0.822809, 0.568318, 0, -0.568318, 0.822809, 0
 shadow_enabled = true
 
 [node name="Camera" type="Camera" parent="SceneConfigs"]
-transform = Transform( 0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -6.94787, 0.974381, 7.98372 )
+transform = Transform( 0.880881, -0.116148, 0.458866, 0, 0.969427, 0.245382, -0.473338, -0.216152, 0.853949, 9.96747, 8.05459, 19.5221 )
 current = true
 
 [node name="Floor" type="MeshInstance" parent="SceneConfigs"]
@@ -35,3 +36,7 @@ material/0 = ExtResource( 1 )
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="MarchingVolume"]
+autoplay = "SampleAnim"
+anims/SampleAnim = ExtResource( 2 )

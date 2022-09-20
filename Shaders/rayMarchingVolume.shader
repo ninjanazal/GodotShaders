@@ -46,3 +46,5 @@ void fragment() {
 	}
 	else{ discard; }
 }
+
+void light() {}
