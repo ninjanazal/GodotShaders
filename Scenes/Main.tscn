@@ -1,13 +1,22 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Shaders/Materials/rayMarchingVolume.material" type="Material" id=1]
 [ext_resource path="res://Scenes/Anims/MarchingVolumeExemple.anim" type="Animation" id=2]
+[ext_resource path="res://Shaders/Materials/ScreenSpaceVolumetricClouds.material" type="Material" id=3]
+[ext_resource path="res://Src/CloudVolume.cs" type="Script" id=4]
+[ext_resource path="res://Src/CloudViewport.cs" type="Script" id=5]
+
+[sub_resource type="QuadMesh" id=4]
+size = Vector2( 2, 2 )
 
 [sub_resource type="PlaneMesh" id=1]
-size = Vector2( 20, 20 )
+size = Vector2( 80, 80 )
 
 [sub_resource type="CubeMesh" id=2]
 size = Vector3( 5, 4, 5 )
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 6, 4, 6 )
 
 [node name="Main" type="Node"]
 
@@ -20,17 +29,30 @@ __meta__ = {
 [node name="OmniLight" type="DirectionalLight" parent="SceneConfigs"]
 transform = Transform( 1, 0, 0, 0, 0.822809, 0.568318, 0, -0.568318, 0.822809, 0, 6.82301, 0 )
 shadow_enabled = true
+shadow_color = Color( 0.482353, 0.482353, 0.482353, 1 )
+directional_shadow_mode = 0
+directional_shadow_split_1 = 0.391
+directional_shadow_blend_splits = true
+directional_shadow_depth_range = 1
 
 [node name="Camera" type="Camera" parent="SceneConfigs"]
-transform = Transform( 0.880881, -0.116148, 0.458866, 0, 0.969427, 0.245382, -0.473338, -0.216152, 0.853949, 9.96747, 8.05459, 19.5221 )
+transform = Transform( 0.880881, -0.116148, 0.458866, 0, 0.969427, 0.245381, -0.473338, -0.216152, 0.853949, 9.96747, 8.05459, 19.5221 )
 current = true
+
+[node name="CamView" type="MeshInstance" parent="SceneConfigs/Camera"]
+unique_name_in_owner = true
+transform = Transform( 1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, -9.53674e-07, -0.743877 )
+cast_shadow = 0
+mesh = SubResource( 4 )
+material/0 = ExtResource( 3 )
+script = ExtResource( 5 )
 
 [node name="Floor" type="MeshInstance" parent="SceneConfigs"]
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
 
 [node name="MarchingVolume" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.71027, 0.884422 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0 )
 mesh = SubResource( 2 )
 material/0 = ExtResource( 1 )
 __meta__ = {
@@ -40,3 +62,12 @@ __meta__ = {
 [node name="AnimationPlayer" type="AnimationPlayer" parent="MarchingVolume"]
 autoplay = "SampleAnim"
 anims/SampleAnim = ExtResource( 2 )
+
+[node name="CloudVolume" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 6, 0 )
+collision_layer = 0
+collision_mask = 0
+script = ExtResource( 4 )
+
+[node name="CollisionShape" type="CollisionShape" parent="CloudVolume"]
+shape = SubResource( 3 )
