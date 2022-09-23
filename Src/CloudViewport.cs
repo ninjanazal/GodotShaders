@@ -16,7 +16,6 @@ namespace GoShaders
 		}
 		public void UpdateBounds((Vector3, Vector3) bounds)
 		{
-			GD.Print("Updating bounds");
 			_material.SetShaderParam("boundsMin", bounds.Item1);
 			_material.SetShaderParam("boundsMax", bounds.Item2);
 		}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Shaders/Materials/rayMarchingVolume.material" type="Material" id=1]
 [ext_resource path="res://Scenes/Anims/MarchingVolumeExemple.anim" type="Animation" id=2]
@@ -12,11 +12,18 @@ size = Vector2( 2, 2 )
 [sub_resource type="PlaneMesh" id=1]
 size = Vector2( 80, 80 )
 
+[sub_resource type="CubeMesh" id=5]
+size = Vector3( 3, 3, 3 )
+
+[sub_resource type="CylinderMesh" id=6]
+top_radius = 2.435
+height = 4.392
+
 [sub_resource type="CubeMesh" id=2]
 size = Vector3( 5, 4, 5 )
 
 [sub_resource type="BoxShape" id=3]
-extents = Vector3( 6, 4, 6 )
+extents = Vector3( 8.5, 7, 8.5 )
 
 [node name="Main" type="Node"]
 
@@ -36,12 +43,12 @@ directional_shadow_blend_splits = true
 directional_shadow_depth_range = 1
 
 [node name="Camera" type="Camera" parent="SceneConfigs"]
-transform = Transform( 0.880881, -0.116148, 0.458866, 0, 0.969427, 0.245381, -0.473338, -0.216152, 0.853949, 9.96747, 8.05459, 19.5221 )
+transform = Transform( 0.913517, 0.0393131, -0.404896, 0, 0.995319, 0.09664, 0.4068, -0.0882823, 0.909242, -16.9162, 6.3614, 19.5419 )
 current = true
 
 [node name="CamView" type="MeshInstance" parent="SceneConfigs/Camera"]
 unique_name_in_owner = true
-transform = Transform( 1, 0, 2.98023e-08, 0, 1, 0, 5.96046e-08, 0, 1, 0, -9.53674e-07, -0.743877 )
+transform = Transform( 1, -2.98023e-08, 1.78814e-07, -3.72529e-09, 1, -7.45058e-09, 1.78814e-07, 1.49012e-08, 1, 0, 0, -0.06 )
 cast_shadow = 0
 mesh = SubResource( 4 )
 material/0 = ExtResource( 3 )
@@ -50,6 +57,16 @@ script = ExtResource( 5 )
 [node name="Floor" type="MeshInstance" parent="SceneConfigs"]
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
+
+[node name="Cube" type="MeshInstance" parent="SceneConfigs/Floor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.92199, 1.45813, -0.26297 )
+mesh = SubResource( 5 )
+skeleton = NodePath("../../..")
+
+[node name="Cube2" type="MeshInstance" parent="SceneConfigs/Floor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5199, 2.24033, -9.51571 )
+mesh = SubResource( 6 )
+skeleton = NodePath("../../..")
 
 [node name="MarchingVolume" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0 )
@@ -64,10 +81,14 @@ autoplay = "SampleAnim"
 anims/SampleAnim = ExtResource( 2 )
 
 [node name="CloudVolume" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 6, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.108367, 6.94508, -5.85746 )
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 4 )
 
 [node name="CollisionShape" type="CollisionShape" parent="CloudVolume"]
 shape = SubResource( 3 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
