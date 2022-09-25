@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Shaders/Materials/rayMarchingVolume.material" type="Material" id=1]
 [ext_resource path="res://Scenes/Anims/MarchingVolumeExemple.anim" type="Animation" id=2]
@@ -13,17 +13,21 @@ size = Vector2( 2, 2 )
 size = Vector2( 80, 80 )
 
 [sub_resource type="CubeMesh" id=5]
-size = Vector3( 3, 3, 3 )
+size = Vector3( 4, 10, 4 )
 
 [sub_resource type="CylinderMesh" id=6]
 top_radius = 2.435
 height = 4.392
 
+[sub_resource type="CylinderMesh" id=7]
+top_radius = 2.435
+height = 6.692
+
 [sub_resource type="CubeMesh" id=2]
 size = Vector3( 5, 4, 5 )
 
 [sub_resource type="BoxShape" id=3]
-extents = Vector3( 8.5, 7, 8.5 )
+extents = Vector3( 24.5103, 3.66578, 20.5013 )
 
 [node name="Main" type="Node"]
 
@@ -34,7 +38,7 @@ __meta__ = {
 }
 
 [node name="OmniLight" type="DirectionalLight" parent="SceneConfigs"]
-transform = Transform( 1, 0, 0, 0, 0.822809, 0.568318, 0, -0.568318, 0.822809, 0, 6.82301, 0 )
+transform = Transform( 1, 0, 0, 0, 0.791885, 0.610671, 0, -0.610671, 0.791885, 0, 21.4826, -10.1254 )
 shadow_enabled = true
 shadow_color = Color( 0.482353, 0.482353, 0.482353, 1 )
 directional_shadow_mode = 0
@@ -43,29 +47,38 @@ directional_shadow_blend_splits = true
 directional_shadow_depth_range = 1
 
 [node name="Camera" type="Camera" parent="SceneConfigs"]
-transform = Transform( 0.913517, 0.0393131, -0.404896, 0, 0.995319, 0.09664, 0.4068, -0.0882823, 0.909242, -16.9162, 6.3614, 19.5419 )
+transform = Transform( 0.740184, 0.216138, -0.636719, 0, 0.94693, 0.321441, 0.672404, -0.237925, 0.700903, -27.6342, 17.0144, 13.9489 )
 current = true
 
 [node name="CamView" type="MeshInstance" parent="SceneConfigs/Camera"]
 unique_name_in_owner = true
-transform = Transform( 1, -2.98023e-08, 1.78814e-07, -3.72529e-09, 1, -7.45058e-09, 1.78814e-07, 1.49012e-08, 1, 0, 0, -0.06 )
+transform = Transform( 1, -1.49012e-08, 1.78814e-07, -1.49012e-08, 1, -7.45058e-08, 1.78814e-07, -2.98023e-08, 1, 9.53674e-07, -1.90735e-06, -0.0600052 )
 cast_shadow = 0
 mesh = SubResource( 4 )
 material/0 = ExtResource( 3 )
 script = ExtResource( 5 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="Floor" type="MeshInstance" parent="SceneConfigs"]
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
 
 [node name="Cube" type="MeshInstance" parent="SceneConfigs/Floor"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.92199, 1.45813, -0.26297 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.15661, 5.00902, -12.3389 )
 mesh = SubResource( 5 )
 skeleton = NodePath("../../..")
 
 [node name="Cube2" type="MeshInstance" parent="SceneConfigs/Floor"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5199, 2.24033, -9.51571 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.3157, 2.20946, -3.2863 )
 mesh = SubResource( 6 )
+skeleton = NodePath("../../..")
+
+[node name="Cube3" type="MeshInstance" parent="SceneConfigs/Floor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.3493, 7.71128, -3.15505 )
+mesh = SubResource( 7 )
 skeleton = NodePath("../../..")
 
 [node name="MarchingVolume" type="MeshInstance" parent="."]
@@ -81,7 +94,7 @@ autoplay = "SampleAnim"
 anims/SampleAnim = ExtResource( 2 )
 
 [node name="CloudVolume" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.108367, 6.94508, -5.85746 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.17538, 9.17032, -3.79552 )
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 4 )
