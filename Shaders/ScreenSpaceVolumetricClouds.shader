@@ -13,12 +13,32 @@ uniform int oct : hint_range(1, 100, 1) = 1;
 uniform float pers = 1.0;
 uniform float frequency = 1.0;
 
+uniform float containerEdgeFadeDst = 50.0;
+
+uniform float gMin = 0.2;
+uniform float gMax = 0.7;
+
+// Detail Noise textures
+uniform int DetailOct : hint_range(1, 100, 1) = 1;
+uniform float DetailPers = 1.0;
+uniform float DetailFrequency = 1.0;
+uniform float detailNoiseScale = 2.0;
+uniform vec3 detailOffset = vec3(0.0);
+uniform vec3 detailWeights = vec3(1.0);
+uniform float detailNoiseWeight;
+
+
 uniform vec3 cloudOffset;
 uniform float cloudScale;
-uniform float densityThreshold : hint_range(0.0, 1.0, 0.01) = 0.5;
 uniform float densityMultiplier : hint_range(0.0, 50.0, 0.01) = 0.1;
 uniform int stepCounter : hint_range(2, 256, 1);
 
+uniform float timeScale : hint_range(0.0, 100.0, 0.01) = 0.5;
+uniform float baseSpeed : hint_range(0.0, 10.0, 0.01) = 2.0;
+uniform float detailSpeed = 1.5;
+
+uniform vec4 shapeNoiseWeights = vec4(1.0);
+uniform float densityOffset = 0.0;
 
 // * * * * * * * * * * * * * * * * * * * *
 
@@ -29,6 +49,8 @@ varying vec3 cameraViewDir;	// World Camera fragment view direction
 
 float map(float s, float a1, float a2, float b1, float b2)
 { return b1 + (s-a1)*(b2-b1)/(a2-a1); }
+
+float saturate(float x) { return max(0.0, min(1.0, x)); }
 
 // * * * * * * * * * * * * * * * * * * * *
 // NOISE 3D
@@ -144,10 +166,48 @@ float calculateDeptDistance(float depthVal, vec2 ScreenUV, mat4 cam_innvProj_mat
 }
 
 float sampleDensityVal(vec3 pos) {
-	vec3 uvw = pos * cloudScale * 0.001 + cloudOffset * 0.01;
-	vec4 shape = vec4(getnoise(oct, pers, frequency, uvw));
-	float density = max(0., shape.r - densityThreshold) * densityMultiplier;
-	return density;
+	float baseScane = 1.0 / 1000.0;
+	float offsetSpeed = 1.0 / 100.0;
+	
+	float time = TIME * timeScale;
+	vec3 size = boundsMax - boundsMin;
+	vec3 boundCenter = (boundsMin + boundsMax) * 0.5;
+	
+	vec3 uvw = (size * 0.5 + pos) * baseScane * cloudScale;
+	vec3 shapeSmaplePos = uvw + cloudOffset * offsetSpeed + vec3(time, time * 0.1, time * 0.2) * baseSpeed;
+	
+	// Falloff calculation along edges
+	float dstFromEdgeX = min(containerEdgeFadeDst, min(pos.x - boundsMin.x, boundsMax.x - pos.x));
+	float dstFromEdgeZ = min(containerEdgeFadeDst, min(pos.z - boundsMin.z, boundsMax.z - pos.z));
+	float edgeWeight = min(dstFromEdgeZ, dstFromEdgeX) / containerEdgeFadeDst;
+	
+	// Height gradient
+	float heightPercent = (pos.y - boundsMin.y) / size.y;
+	float heightGradient = gMin *
+		saturate(map(heightPercent, 1.0, gMax, 0.0, 1.0));
+	heightGradient *= edgeWeight;
+	
+	// base shape density
+	vec4 shapeNoise = vec4(getnoise(oct, pers, frequency, shapeSmaplePos));
+	vec4 normalizedShapeWeights = shapeNoiseWeights / dot(shapeNoiseWeights, vec4(1.0));
+	float shapeFBM = dot(shapeNoise, normalizedShapeWeights) * heightGradient;
+	float baseShapeDensity = shapeFBM + densityOffset * 0.1;
+	
+	 // Save sampling from detail tex if shape density <= 0
+	if(baseShapeDensity > 0.0) {
+		// sample detail noise
+		vec3 detailSamplePos = uvw * detailNoiseScale + detailOffset * offsetSpeed + vec3(time * 0.4, -time, time * 0.1) * detailSpeed;
+		vec4 detailNoise = vec4(getnoise(DetailOct, DetailPers, DetailFrequency, detailSamplePos));
+		vec3 normalizedDetailWeights = detailWeights / dot(detailWeights, vec3(1.0));
+		float detailFBM = dot(detailNoise.xyz, normalizedDetailWeights);
+		
+		float oneMinusShape = 1.0 - shapeFBM;
+		float detailErodeWeight = pow(oneMinusShape, 3);
+		float cloudDensity = baseShapeDensity - (1.0 - detailFBM) * detailErodeWeight * detailNoiseWeight;
+		
+		return cloudDensity * densityMultiplier * 0.1;
+	}
+	return 0.0;
 }
 
 void vertex() {

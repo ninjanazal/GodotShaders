@@ -27,7 +27,7 @@ height = 6.692
 size = Vector3( 5, 4, 5 )
 
 [sub_resource type="BoxShape" id=3]
-extents = Vector3( 24.5103, 3.66578, 20.5013 )
+extents = Vector3( 21.8805, 46.4812, 30.5112 )
 
 [node name="Main" type="Node"]
 
@@ -47,12 +47,13 @@ directional_shadow_blend_splits = true
 directional_shadow_depth_range = 1
 
 [node name="Camera" type="Camera" parent="SceneConfigs"]
-transform = Transform( 0.740184, 0.216138, -0.636719, 0, 0.94693, 0.321441, 0.672404, -0.237925, 0.700903, -27.6342, 17.0144, 13.9489 )
+transform = Transform( 0.678864, 0.389099, 0.622692, 0, 0.84805, -0.529917, -0.734264, 0.359742, 0.575711, 39.9144, 3.27986, 40.326 )
 current = true
+far = 150.0
 
 [node name="CamView" type="MeshInstance" parent="SceneConfigs/Camera"]
 unique_name_in_owner = true
-transform = Transform( 1, -1.49012e-08, 1.78814e-07, -1.49012e-08, 1, -7.45058e-08, 1.78814e-07, -2.98023e-08, 1, 9.53674e-07, -1.90735e-06, -0.0600052 )
+transform = Transform( 1, -1.49012e-08, 1.49012e-07, -1.49012e-08, 1, -7.45058e-08, 1.49012e-07, -2.98023e-08, 1, 0, 0, -0.0600052 )
 cast_shadow = 0
 mesh = SubResource( 4 )
 material/0 = ExtResource( 3 )
@@ -94,7 +95,7 @@ autoplay = "SampleAnim"
 anims/SampleAnim = ExtResource( 2 )
 
 [node name="CloudVolume" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.17538, 9.17032, -3.79552 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.17538, 46.556, -7.20059 )
 collision_layer = 0
 collision_mask = 0
 script = ExtResource( 4 )
